@@ -102,17 +102,12 @@ int main(int argc, char *argv[])
 	}
 	else{
 		fscanf(fPtr, "%s", &token);
-		printf("\nEl token es: %s \n", token);
 		fclose(fPtr);
 	}
 	
   snprintf(api_url, 256, "%s%s%s", api_gen, token, cmdGetUpdates);
 
-  printf("\n\nLink: %s \n\n", api_url);
-
   CURLcode res;
-  
-
   int SMflag = 0;
 
   while(1){
@@ -142,9 +137,7 @@ int main(int argc, char *argv[])
     snprintf(api_url, 256, "%s%s%s%s%d", api_gen, token, cmdGetUpdates, offset, upd_id);
  
     memset(chat_id, 0, sizeof(chat_id));
-    if(leer_responseStr(chunk.response, "\"chat\":{\"id\":", chat_id, 20)){
-	printf("\nChat id: %s\n", chat_id);
-    }
+    leer_responseStr(chunk.response, "\"chat\":{\"id\":", chat_id, 20);
    
     if(leer_responseInt(chunk.response, "\"date\":", &tiempo)){
         fprintf(fPtr, "Tiempo: %d\n", tiempo);
