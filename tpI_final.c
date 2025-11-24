@@ -10,7 +10,7 @@ struct memory {
   char *response;
   size_t size;
 };
-	
+	      
 static size_t cb(char *data, size_t size, size_t nmemb, void *clientp)
 {
   size_t realsize = nmemb;
@@ -59,19 +59,15 @@ int leer_responseStr(char* src, char* buscar, char* guardar, int n){
 }
 
 int respuestas(int flag, char* msg, char* texto){
-  if(strcasestr(texto, "hola") && flag!=1){
-	msg = "Hola%20";
-	return 1;
-    }
-    else{
-
-        if(strcasestr(texto, "chau") && flag!=1){
-	  msg = "Chau%20";
-	  return 1;
-    	}
-    	else
-	  return 0;
-    	}
+  char *resp[] = {"Hola", "Chau", "Prueba"}; 
+  
+  for(int i=0; i<(sizeof(resp)/ sizeof(resp[0])); i++){
+	if(strcasestr(texto, resp[i]) && flag!=1){
+		sprintf(msg, "%s%s", resp[i], ",%20");
+		return 1;
+	}
+  }
+  return 0;
 }
 
 int main(int argc, char *argv[])
@@ -89,6 +85,8 @@ int main(int argc, char *argv[])
 	char nombre[30];
 	char texto[50];
 	char chat_id[20];
+
+	char mensaje[10];
 	
 	if(argc < 2){
 		printf("Error, no se pasó el argumento para el token");
@@ -154,21 +152,10 @@ int main(int argc, char *argv[])
     }
 	
 
-    if(strcasestr(texto, "hola") && SMflag!=1){
+    if((SMflag = respuestas(SMflag, mensaje, texto))){
 	snprintf(api_url, 256, "%s%s%s%s%s%s%s", api_gen, token, cmdSendMessage, chat_id, 
-					         sendMessageText,"Hola,%20", nombre);
-	SMflag = 1;
+						 sendMessageText, mensaje, nombre);
     }
-    else{
-
-        if(strcasestr(texto, "chau") && SMflag!=1){
-	  snprintf(api_url, 256, "%s%s%s%s%s%s%s", api_gen, token, cmdSendMessage, chat_id, 
-					           sendMessageText,"Chau%20", nombre);
-	  SMflag = 1;
-    	}
-    	else
-	  SMflag = 0;
-    	}   
 
     printf("\n%s", chunk.response);
     sleep(2);
